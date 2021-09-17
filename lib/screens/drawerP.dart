@@ -29,12 +29,12 @@ class drawerP extends StatelessWidget {
                 }
               ),
               ListTile(
-                title: Text("Titulo 2"),
-                subtitle: Text("Descripcion corta"),
-                leading: Icon(Icons.thermostat),
+                title: Text("Intenciones"),
+                subtitle: Text("Intenciones implicitas"),
+                leading: Icon(Icons.phone_android),
                 trailing: Icon(Icons.chevron_right),
                 onTap: (){
-                  
+                  Navigator.pushNamed(context, "/intenciones");
                 }
               ),
             ],
