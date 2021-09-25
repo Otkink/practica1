@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:practica2/screens/dashboard_screen.dart';
-import 'package:practica2/utils/color_settings.dart';
+import 'package:practica2/src/screens/dashboard_screen.dart';
+import 'package:practica2/src/utils/color_settings.dart';
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({Key? key}) : super(key: key);

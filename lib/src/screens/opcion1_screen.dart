@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:practica2/screens/drawerP.dart';
+import 'package:practica2/src/screens/drawerP.dart';
 
 class Opcion1Screen extends StatefulWidget {
   Opcion1Screen({Key? key}) : super(key: key);

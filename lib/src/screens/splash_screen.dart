@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:practica2/screens/login-screen.dart';
-import 'package:practica2/utils/color_settings.dart';
+import 'package:practica2/src/screens/login-screen.dart';
+import 'package:practica2/src/utils/color_settings.dart';
 import 'package:splash_screen_view/SplashScreenView.dart';
 
 class SplashScreen extends StatelessWidget {

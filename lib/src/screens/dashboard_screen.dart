@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:practica2/screens/drawerP.dart';
-import 'package:practica2/utils/color_settings.dart';
-
+import 'package:practica2/src/screens/drawerP.dart';
+import 'package:practica2/src/utils/color_settings.dart';
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({Key? key}) : super(key: key);
 

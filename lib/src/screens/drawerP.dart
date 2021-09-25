@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:practica2/utils/color_settings.dart';
+import 'package:practica2/src/utils/color_settings.dart';
 
 class drawerP extends StatelessWidget {
   const drawerP({Key? key}) : super(key: key);
