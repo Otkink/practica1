@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:practica2/src/screens/intenciones_screen.dart';
+import 'package:practica2/src/screens/notas_screen.dart';
 import 'package:practica2/src/screens/opcion1_screen.dart';
 import 'package:practica2/src/screens/splash_screen.dart';
 
@@ -16,6 +17,7 @@ class MyApp extends StatelessWidget {
       routes: {
         "/opc1": (BuildContext context) => Opcion1Screen(),
         "/intenciones": (BuildContext context) => IntencionesScreen(),
+        "/notas": (BuildContext context) => NotasScreen()
       },
       debugShowCheckedModeBanner: false,
       home: SplashScreen(),

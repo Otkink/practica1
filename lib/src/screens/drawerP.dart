@@ -25,6 +25,7 @@ class drawerP extends StatelessWidget {
                 leading: Icon(Icons.monetization_on_outlined),
                 trailing: Icon(Icons.chevron_right),
                 onTap: (){
+                  Navigator.pop(context);
                   Navigator.pushNamed(context, "/opc1");
                 }
               ),
@@ -34,7 +35,18 @@ class drawerP extends StatelessWidget {
                 leading: Icon(Icons.phone_android),
                 trailing: Icon(Icons.chevron_right),
                 onTap: (){
+                  Navigator.pop(context);
                   Navigator.pushNamed(context, "/intenciones");
+                }
+              ),
+              ListTile(
+                title: Text("Notas"),
+                subtitle: Text("CRUD Notas"),
+                leading: Icon(Icons.note),
+                trailing: Icon(Icons.chevron_right),
+                onTap: (){
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, "/notas");
                 }
               ),
             ],
