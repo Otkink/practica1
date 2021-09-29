@@ -4,7 +4,8 @@ import 'package:practica2/src/models/notas_model.dart';
 import 'package:practica2/src/utils/color_settings.dart';
 
 class AgregarNotaScreen extends StatefulWidget {
-  AgregarNotaScreen({Key? key}) : super(key: key);
+  NotasModel? nota;
+  AgregarNotaScreen({Key? key, this.nota}) : super(key: key);
 
   @override
   _AgregarNotaScreenState createState() => _AgregarNotaScreenState();
@@ -19,6 +20,12 @@ class _AgregarNotaScreenState extends State<AgregarNotaScreen> {
 
   @override
   void initState() {
+
+    if(widget.nota != null){
+      _controllerTitulo.text = widget.nota!.titulo!;
+      _controllerDetalle.text = widget.nota!.detalle!;
+    }
+
     _databaseHelper = DatabaseHelper();
   }
 
@@ -27,7 +34,7 @@ class _AgregarNotaScreenState extends State<AgregarNotaScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: ColorSettings.colorPrimary,
-        title: Text("ノートを追加"),
+        title: widget.nota == null ? Text("ノートを追加") : Text("ノートを編集"),
       ),
       body: Column(
         children: [

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:practica2/src/database/database_helper.dart';
 import 'package:practica2/src/models/notas_model.dart';
+import 'package:practica2/src/screens/agregar_nota_screen.dart';
 import 'package:practica2/src/utils/color_settings.dart';
 
 class NotasScreen extends StatefulWidget {
@@ -60,7 +61,54 @@ class _NotasScreenState extends State<NotasScreen> {
           child: Column(
             children: [
               Text(nota.titulo!, style: TextStyle(fontWeight: FontWeight.bold)),
-              Text(nota.detalle!)
+              Text(nota.detalle!),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    onPressed: (){ //min. 29:38
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => AgregarNotaScreen(nota: nota,)));
+                    }, 
+                    icon: Icon(Icons.edit),
+                    iconSize: 18,
+                    ),
+                  IconButton(
+                    onPressed: (){
+                      showDialog(
+                        context: context, 
+                        builder: (context){
+                          return AlertDialog(
+                            title: Text("Confirmacion"),
+                            content: Text("Seguro quiere borrar este elemento?"),
+                            actions: [
+                              TextButton(
+                                onPressed: (){
+                                  Navigator.pop(context);
+                                  _databaseHelper.delete(nota.id!).then(
+                                    (noRows){
+                                      if(noRows > 0){
+                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("El registro se ha eliminado")));
+                                      setState(() {});
+                                      }
+                                    }
+                                  );
+                                }, 
+                                child: Text("Si")),
+                              TextButton(
+                                onPressed: (){
+                                  Navigator.pop(context);
+                                }, 
+                                child: Text("No"))
+                            ],
+                          );
+                        }
+                        );
+                    }, 
+                    icon: Icon(Icons.delete),
+                    iconSize: 18,
+                    )
+                ],
+              )
             ],
           ),
         );
