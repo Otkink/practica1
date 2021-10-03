@@ -9,14 +9,26 @@ class drawerP extends StatelessWidget {
     return Drawer(
           child: ListView(
             children: [
-              UserAccountsDrawerHeader(
+              /*UserAccountsDrawerHeader(
                 accountName: Text("Daniel Torresさん"), 
                 accountEmail: Text("dtt@itcelaya.edu.mx"),
                 currentAccountPicture: CircleAvatar(
                   child: Image.network("https://www.pngall.com/wp-content/uploads/5/Profile-Avatar-PNG.png"),
                 ),
                 decoration: BoxDecoration(
-                  color: ColorSettings.colorPrimary
+                  color: ColorSettings.colorPrimary,
+                ),
+              ),*/
+              UserAccountsDrawerHeader(
+                onDetailsPressed: (){Navigator.pushNamed(context, "/perfil");},
+                accountName: Text("Daniel Torresさん"), 
+                accountEmail: Text("dtt@itcelaya.edu.mx"),
+                currentAccountPicture: CircleAvatar(
+                  backgroundImage: NetworkImage("https://images.unsplash.com/photo-1618641986557-1ecd230959aa?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8aW5zdGFncmFtJTIwcHJvZmlsZXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&w=1000&q=80"),
+                  //modificar para que este ajutado al circulo
+                ),
+                decoration: BoxDecoration(
+                  color: ColorSettings.colorPrimary,
                 ),
               ),
               ListTile(
