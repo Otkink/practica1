@@ -54,66 +54,74 @@ class _NotasScreenState extends State<NotasScreen> {
   }
 
   Widget _listadoNotas(List<NotasModel> notas){
-    return ListView.builder(
-      itemBuilder: (BuildContext context, index){
-        NotasModel nota = notas[index];
-        return Card(
-          child: Column(
-            children: [
-              Text(nota.titulo!, style: TextStyle(fontWeight: FontWeight.bold)),
-              Text(nota.detalle!),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  IconButton(
-                    onPressed: (){ //min. 29:38
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => AgregarNotaScreen(nota: nota,)));
-                    }, 
-                    icon: Icon(Icons.edit),
-                    iconSize: 18,
-                    ),
-                  IconButton(
-                    onPressed: (){
-                      showDialog(
-                        context: context, 
-                        builder: (context){
-                          return AlertDialog(
-                            title: Text("Confirmacion"),
-                            content: Text("Seguro quiere borrar este elemento?"),
-                            actions: [
-                              TextButton(
-                                onPressed: (){
-                                  Navigator.pop(context);
-                                  _databaseHelper.delete(nota.id!).then(
-                                    (noRows){
-                                      if(noRows > 0){
-                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("El registro se ha eliminado")));
-                                      setState(() {});
-                                      }
-                                    }
-                                  );
-                                }, 
-                                child: Text("Si")),
-                              TextButton(
-                                onPressed: (){
-                                  Navigator.pop(context);
-                                }, 
-                                child: Text("No"))
-                            ],
-                          );
-                        }
-                        );
-                    }, 
-                    icon: Icon(Icons.delete),
-                    iconSize: 18,
-                    )
-                ],
-              )
-            ],
-          ),
+    return RefreshIndicator(
+      onRefresh: (){
+        return Future.delayed(
+          Duration(seconds: 2),
+          (){setState(() {});}
         );
       },
-      itemCount: notas.length,
+      child: ListView.builder(
+        itemBuilder: (BuildContext context, index){
+          NotasModel nota = notas[index];
+          return Card(
+            child: Column(
+              children: [
+                Text(nota.titulo!, style: TextStyle(fontWeight: FontWeight.bold)),
+                Text(nota.detalle!),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                      onPressed: (){ //min. 29:38
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => AgregarNotaScreen(nota: nota,)));
+                      }, 
+                      icon: Icon(Icons.edit),
+                      iconSize: 18,
+                      ),
+                    IconButton(
+                      onPressed: (){
+                        showDialog(
+                          context: context, 
+                          builder: (context){
+                            return AlertDialog(
+                              title: Text("Confirmacion"),
+                              content: Text("Seguro quiere borrar este elemento?"),
+                              actions: [
+                                TextButton(
+                                  onPressed: (){
+                                    Navigator.pop(context);
+                                    _databaseHelper.delete(nota.id!).then(
+                                      (noRows){
+                                        if(noRows > 0){
+                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("El registro se ha eliminado")));
+                                        setState(() {});
+                                        }
+                                      }
+                                    );
+                                  }, 
+                                  child: Text("Si")),
+                                TextButton(
+                                  onPressed: (){
+                                    Navigator.pop(context);
+                                  }, 
+                                  child: Text("No"))
+                              ],
+                            );
+                          }
+                          );
+                      }, 
+                      icon: Icon(Icons.delete),
+                      iconSize: 18,
+                      )
+                  ],
+                )
+              ],
+            ),
+          );
+        },
+        itemCount: notas.length,
+      ),
     );
   }
 

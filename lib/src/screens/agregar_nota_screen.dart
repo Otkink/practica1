@@ -36,32 +36,47 @@ class _AgregarNotaScreenState extends State<AgregarNotaScreen> {
         backgroundColor: ColorSettings.colorPrimary,
         title: widget.nota == null ? Text("ノートを追加") : Text("ノートを編集"),
       ),
-      body: Column(
+      body: ListView(
         children: [
           _crearTextFieldTitulo(),
           SizedBox(height: 10,),
           _crearTextFieldDetalle(),
           ElevatedButton(
             onPressed: (){
-              NotasModel nota = NotasModel(
-                titulo: _controllerTitulo.text,
-                detalle: _controllerDetalle.text
-              );
+              if(widget.nota == null){
+                NotasModel nota = NotasModel(
+                  titulo: _controllerTitulo.text,
+                  detalle: _controllerDetalle.text
+                );
 
-              _databaseHelper.insert(nota.toMap()).then(
-                (value){
-                  if(value > 0){
-                    //Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("Registro insertado exitosamente"))
-                    );
-                  }else{
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("La solicitud no se completo "))
-                    );
+                _databaseHelper.insert(nota.toMap()).then(
+                  (value){
+                    if(value > 0){
+                      Navigator.pop(context);
+                    }else{
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("La solicitud no se completo "))
+                      );
+                    }
                   }
-                }
-              );
+                );
+              } else {
+                NotasModel nota = NotasModel(
+                  id: widget.nota!.id,
+                  titulo: _controllerTitulo.text,
+                  detalle: _controllerDetalle.text,
+                );
+                _databaseHelper.update(nota.toMap()).then(
+                  (value) {
+                    if(value > 0){
+                      Navigator.pop(context);
+                    }else{
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("La solicitud no se completo"))
+                      );
+                    }
+                  });
+              }
             },
             child: Text(" 保存"),
 
