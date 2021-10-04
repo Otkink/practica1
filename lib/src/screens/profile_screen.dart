@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:practica2/src/database/profiles_db.dart';
 import 'package:practica2/src/main.dart';
 import 'package:practica2/src/models/profiles_model.dart';
+import 'package:path/path.dart';
 
 class ProfileScreen extends StatefulWidget {
 
@@ -32,39 +34,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
         print("Cancele la accion");
         return;
       } else{
+        //final imageTemporary = File(image.path);
+        //print(image.path);
+        avatar = image.path; //image.path siempre es la ruta al archivo temporal
+        /*final imagePermanent = await saveImagePermanently(image.path);
+        print('Esto es temporal: $avatar');
+        print('Esto es permanente: $imagePermanent');
+        avatar = imagePermanent.path;*/
         final imageTemporary = File(image.path);
-        print(image.path);
-        avatar = image.path;
         setState(() { }); //actualiza la pagina para que aparezca la nueva imagen
-        /*ProfilesModel profile = ProfilesModel(
-          id: 1,//widget.profile!.id,
-          avatar: avatar,
-          nombre: _txtName.text,
-          apaterno: _txtApaterno.text,
-          amaterno: _txtAmaterno.text,
-          telefono: int.tryParse(_txtTel.text),//convierto el valor String del campo a Integer
-          email: _txtEmail.text
-        );
-         _profileDB.update(profile.toMap()).then(
-          (value) {
-            if(value > 0){
-              setState(() {_profileDB.getProfile(1); }); //vuelvo a hacer la consulta para actualizar el valor de resultGet
-                ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text("Se ha actualizado la foto."))
-              );
-            }else{
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text("No se pudo actualizar la foto."))
-              );
-            }
-        });*/
-
-        setState(() => this.image = imageTemporary);
+        setState(() => this.image = imageTemporary );
+        //setState(() => this.image = imagePermanent);
       }
     } on PlatformException catch (e) {
       print('Seleccion de imagen fallida: $e');
     }
   }
+
+  Future<File> saveImagePermanently(String imagePath) async {
+    final directory = await getApplicationDocumentsDirectory();
+    final name = basename(imagePath);
+    final image = File('${directory.path}/$name');
+
+    return File(imagePath).copy(image.path);
+  }
+
 
   late ProfileDB _profileDB;
 
@@ -106,7 +100,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                         (value) {
                                                           if(value > 0){
                                                             
-                                                            setState(() {_profileDB.getProfile(1); }); //vuelvo a hacer la consulta para actualizar el valor de resultGet
+                                                            //setState(() {_profileDB.getProfile(1); }); //vuelvo a hacer la consulta para actualizar el valor de resultGet
                                                             ScaffoldMessenger.of(context).showSnackBar(
                                                               SnackBar(content: Text("Se ha actualizado la foto."))
                                                             );
@@ -199,10 +193,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       ),
                                       Container(margin: EdgeInsets.only(right: 20), 
                                                 child: IconButton(
-                                                  onPressed: (){
+                                                  onPressed: () async {
+                                                    String avatarPermanente = avatar; //Si es la primera vez que se entra en la pantalla y no se selecciona ninguna imagen, entonces tendra el valor recuperado de la BD. Si se selecciona una imagen entonces tomara el valor de la ruta temporal, pero como ya se selecciono alguna, entonces sera sustituida posteriormente por la ruta permanente.
+                                                    if (image == null){}//si es null es porque no se ha seleccionado ninguna imagen, si hay una imagen es porque el usuario quiere cambiar la foto, si no le gusta, simplemente
+                                                      else{ 
+                                                        //image!.delete(); //sirve para borrar la imagen almacenada permanentemente
+                                                        imageCache!.clear();//limpia las imagenes de la cache de la app
+                                                        final imagePermanent = await saveImagePermanently(image!.path); //hasta que se selccione una imagen y se presione el IconButton, es entonces que se guardara permanentemente
+                                                        print('Esto es temporal: $avatar');
+                                                        
+                                                        print('Esto es permanente: $imagePermanent');
+                                                        avatarPermanente = imagePermanent.path; //actualizo la ruta que contiene la variable para que sea actualizada o insertada en el registro
+                                                      }
+
+
                                                     if(resultGet == null){ //si es nulo (es decir, que no existe el registro) antes de presionar el icono insertara uno nuevo con los datos de cada texfield
                                                       ProfilesModel profile = ProfilesModel(
-                                                        avatar: avatar,
+                                                        avatar: avatarPermanente,
                                                         nombre: _txtName.text,
                                                         apaterno: _txtApaterno.text,
                                                         amaterno: _txtAmaterno.text,
@@ -226,7 +233,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                     } else {
                                                       ProfilesModel profile = ProfilesModel(
                                                         id: 1,//widget.profile!.id,
-                                                        avatar: avatar,
+                                                        avatar: avatarPermanente,
                                                         nombre: _txtName.text,
                                                         apaterno: _txtApaterno.text,
                                                         amaterno: _txtAmaterno.text,
