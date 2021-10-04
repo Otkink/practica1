@@ -1,14 +1,16 @@
 import 'dart:io';
 
 import 'package:path_provider/path_provider.dart';
-import 'package:practica2/src/models/notas_model.dart';
+import 'package:practica2/src/models/profiles_model.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-class DatabaseHelper {
+class ProfileDB {
   static final _nombreBD = 'NOTASBD';
-  static final _versionBD = 1;
-  static final _nombreTBL = 'tblNotas';  
+  static final _versionBD = 2;//nueva version
+  static final _nombreTBL = 'tblProfiles';  
+
+  static late var resultGet;
 
   static Database? _database;
   Future<Database?> get database async {
@@ -19,18 +21,23 @@ class DatabaseHelper {
   }
 
  Future<Database> _initDatabase() async{
+   print("estoy en _initDatabase");
    Directory carpeta = await getApplicationDocumentsDirectory();
    String rutaBD = join(carpeta.path,_nombreBD);
    print(rutaBD+' '+_nombreBD);
    return openDatabase(
      rutaBD,
      version: _versionBD,
-     onCreate: _crearTabla
+     onUpgrade: _crearTabla,
    );
  }
 
- Future<void> _crearTabla(Database db, int version) async{
-   await db.execute("CREATE TABLE $_nombreTBL (id INTEGER PRIMARY KEY, titulo VARCHAR(50), detalle VARCHAR(100))");
+ Future<void> _crearTabla(Database db, int oldVersion, int version) async{
+   print("Estoy creando la tabla!!!");
+   oldVersion = 1;
+   if(oldVersion == 1){
+    await db.execute("CREATE TABLE $_nombreTBL (id INTEGER PRIMARY KEY, avatar TEXT, nombre VARCHAR(20), apaterno VARCHAR(20), amaterno varchar(20), telefono INTEGER, email VARCHAR(100))");
+   }
  }
 
  Future <int> insert(Map<String,dynamic> row) async{
@@ -48,15 +55,19 @@ class DatabaseHelper {
    return await conexion!.delete(_nombreTBL, where: 'id = ?', whereArgs: [id]);
  }
 
- Future<List<NotasModel>> getAllNotes() async {
+ Future<List<ProfilesModel>> getAllProfiles() async {
    var conexion = await database;
    var result = await conexion!.query(_nombreTBL);
-   return result.map((notaMap) => NotasModel.fromMap(notaMap)).toList();
+   return result.map((notaMap) => ProfilesModel.fromMap(notaMap)).toList();
  }
 
- Future<NotasModel> getNote(int id) async {
+ Future<ProfilesModel> getProfile(int id) async {
    var conexion = await database;
    var result = await conexion!.query(_nombreTBL, where: 'id=?', whereArgs: [id]);
-   return NotasModel.fromMap(result.first);
+   print(result);
+   print(result[0]['nombre']);
+   resultGet = result;
+   print("PDB $resultGet");
+   return ProfilesModel.fromMap(result.first);
  }
 }
