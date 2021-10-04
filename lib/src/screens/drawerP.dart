@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:practica2/src/database/profiles_db.dart';
 import 'package:practica2/src/main.dart';
@@ -29,7 +31,7 @@ class drawerP extends StatelessWidget {
                 accountName: Text("${resultGet[0]['nombre']} ${resultGet[0]['apaterno']}さん"), 
                 accountEmail: Text("dtt@itcelaya.edu.mx"),
                 currentAccountPicture: CircleAvatar(
-                  backgroundImage: NetworkImage("https://images.unsplash.com/photo-1618641986557-1ecd230959aa?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8aW5zdGFncmFtJTIwcHJvZmlsZXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&w=1000&q=80"),
+                  backgroundImage: Image.file(File(resultGet[0]['avatar'])).image,
                   //modificar para que este ajutado al circulo
                 ),
                 decoration: BoxDecoration(

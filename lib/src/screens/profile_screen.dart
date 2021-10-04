@@ -24,7 +24,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   //String avatar = 'https://images.unsplash.com/photo-1618641986557-1ecd230959aa?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8aW5zdGFncmFtJTIwcHJvZmlsZXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&w=1000&q=80';//contendra la ubicacion de la imagen
   File? image;
   String avatar = resultGet[0]['avatar'];
-  String avatar2 = '';
+  //String avatar2 = '';
   Future pickImage() async{ //metodo para escoger la imagen de la Galeria
     try {
       final image = await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -35,8 +35,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         final imageTemporary = File(image.path);
         print(image.path);
         avatar = image.path;
-
-        ProfilesModel profile = ProfilesModel(
+        setState(() { }); //actualiza la pagina para que aparezca la nueva imagen
+        /*ProfilesModel profile = ProfilesModel(
           id: 1,//widget.profile!.id,
           avatar: avatar,
           nombre: _txtName.text,
@@ -57,7 +57,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 SnackBar(content: Text("No se pudo actualizar la foto."))
               );
             }
-        });
+        });*/
 
         setState(() => this.image = imageTemporary);
       }
@@ -118,7 +118,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                         });*/
 
     if(resultGet != null){//rellena campos antes de abrir la pantalla
-      avatar = resultGet[0]['avatar'];
+      avatar = avatar!= resultGet[0]['avatar'] ? avatar : resultGet[0]['avatar'];
       _txtName.text = resultGet[0]['nombre'];
       _txtApaterno.text = resultGet[0]['apaterno'];
       _txtAmaterno.text = resultGet[0]['amaterno'];
@@ -133,7 +133,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     /*******************Esto es lo que recarga el setState, porque el initState() se mantiene intacto*************************** */
     if(resultGet != null){//rellenar campos
-      avatar = resultGet[0]['avatar'];
+      avatar = avatar!= resultGet[0]['avatar'] ? avatar : resultGet[0]['avatar'];
       _txtName.text = resultGet[0]['nombre'];
       _txtApaterno.text = resultGet[0]['apaterno'];
       _txtAmaterno.text = resultGet[0]['amaterno'];
@@ -194,7 +194,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     children: [
                                       GestureDetector(
                                         onTap: (){ pickImage();},
-                                        child: CircleAvatar(radius: 55, backgroundImage: Image.file(File(avatar)).image //NetworkImage(avatar),
+                                        child: CircleAvatar(radius: 55, backgroundImage: (avatar != resultGet[0]['avatar']) ? Image.file(File(avatar)).image : Image.file(File(resultGet[0]['avatar'])).image //NetworkImage(avatar),
                                         ),
                                       ),
                                       Container(margin: EdgeInsets.only(right: 20), 
