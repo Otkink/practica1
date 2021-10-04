@@ -1,6 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:glassmorphism/glassmorphism.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:practica2/src/database/profiles_db.dart';
+import 'package:practica2/src/main.dart';
 import 'package:practica2/src/models/profiles_model.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -15,6 +20,52 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
 
+
+  //String avatar = 'https://images.unsplash.com/photo-1618641986557-1ecd230959aa?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8aW5zdGFncmFtJTIwcHJvZmlsZXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&w=1000&q=80';//contendra la ubicacion de la imagen
+  File? image;
+  String avatar = resultGet[0]['avatar'];
+  String avatar2 = '';
+  Future pickImage() async{ //metodo para escoger la imagen de la Galeria
+    try {
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if(image == null){
+        print("Cancele la accion");
+        return;
+      } else{
+        final imageTemporary = File(image.path);
+        print(image.path);
+        avatar = image.path;
+
+        ProfilesModel profile = ProfilesModel(
+          id: 1,//widget.profile!.id,
+          avatar: avatar,
+          nombre: _txtName.text,
+          apaterno: _txtApaterno.text,
+          amaterno: _txtAmaterno.text,
+          telefono: int.tryParse(_txtTel.text),//convierto el valor String del campo a Integer
+          email: _txtEmail.text
+        );
+         _profileDB.update(profile.toMap()).then(
+          (value) {
+            if(value > 0){
+              setState(() {_profileDB.getProfile(1); }); //vuelvo a hacer la consulta para actualizar el valor de resultGet
+                ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text("Se ha actualizado la foto."))
+              );
+            }else{
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text("No se pudo actualizar la foto."))
+              );
+            }
+        });
+
+        setState(() => this.image = imageTemporary);
+      }
+    } on PlatformException catch (e) {
+      print('Seleccion de imagen fallida: $e');
+    }
+  }
+
   late ProfileDB _profileDB;
 
   TextEditingController _txtName = TextEditingController();
@@ -22,20 +73,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController _txtAmaterno = TextEditingController();
   TextEditingController _txtTel = TextEditingController();
   TextEditingController _txtEmail = TextEditingController();
-  String avatar = 'https://images.unsplash.com/photo-1618641986557-1ecd230959aa?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8aW5zdGFncmFtJTIwcHJvZmlsZXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&w=1000&q=80';//contendra la ubicacion de la imagen
-
+  
 
   @override
   void initState() {
 
     super.initState();
-    
 
     _profileDB = ProfileDB();
-
     _profileDB.getProfile(1);//como solo es 1 perfil por el momento hago la consulta directamente al registro que ya existe//este metodo guarda la cadena List en una var resultGet
-    print('Esta es mi consulta jiji ${ProfileDB.resultGet}');
-    print("Mi correo es ${ProfileDB.resultGet[0]['nombre']}");
+    /*//lo invoco desde aqui para que cada vez acceda a esta pantalla se actualice la variable
+    print('Esta es mi consulta jiji ${resultGet}');
+    print("Mi correo es ${resultGet[0]['nombre']}");*/
     /*if(widget.profile != null){//rellenar campos
       avatar = widget.profile!.avatar!;
       _txtName.text = widget.profile!.nombre!;
@@ -44,14 +93,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
       _txtTel.text = '${widget.profile!.telefono!}';//corregir//buscar como convertir int a String
       _txtEmail.text = widget.profile!.email!;
     }*/
+    /*ProfilesModel profile = ProfilesModel( //EN CASO DE BORRADO ACCIDENTAL, DESCOMENTAR ESTE METODO Y RECARGAR ESTA PANTALLA
+                                                        id: 1,//widget.profile!.id,
+                                                        avatar: "/data/user/0/com.example.practica2/cache/image_picker5101347763199675778.jpg",
+                                                        nombre: 'Daniel',
+                                                        apaterno: 'Torres',
+                                                        amaterno: 'Tolentino',
+                                                        telefono: 4888741321,//convierto el valor String del campo a Integer
+                                                        email: 'dsada@dasdasd.com'
+                                                      );
+                                                      _profileDB.update(profile.toMap()).then(
+                                                        (value) {
+                                                          if(value > 0){
+                                                            
+                                                            setState(() {_profileDB.getProfile(1); }); //vuelvo a hacer la consulta para actualizar el valor de resultGet
+                                                            ScaffoldMessenger.of(context).showSnackBar(
+                                                              SnackBar(content: Text("Se ha actualizado la foto."))
+                                                            );
+                                                          }else{
+                                                            ScaffoldMessenger.of(context).showSnackBar(
+                                                              SnackBar(content: Text("No se pudo actualizar la foto."))
+                                                            );
+                                                          }
+                                                        });*/
 
-    if(ProfileDB.resultGet != null){//rellenar campos
-      avatar = ProfileDB.resultGet[0]['avatar'];
-      _txtName.text = ProfileDB.resultGet[0]['nombre'];
-      _txtApaterno.text = ProfileDB.resultGet[0]['apaterno'];
-      _txtAmaterno.text = ProfileDB.resultGet[0]['amaterno'];
-      _txtTel.text = '${ProfileDB.resultGet[0]['telefono']}';
-      _txtEmail.text = ProfileDB.resultGet[0]['email'];
+    if(resultGet != null){//rellena campos antes de abrir la pantalla
+      avatar = resultGet[0]['avatar'];
+      _txtName.text = resultGet[0]['nombre'];
+      _txtApaterno.text = resultGet[0]['apaterno'];
+      _txtAmaterno.text = resultGet[0]['amaterno'];
+      _txtTel.text = '${resultGet[0]['telefono']}';
+      _txtEmail.text = resultGet[0]['email'];
     }
 
   }
@@ -60,13 +132,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     /*******************Esto es lo que recarga el setState, porque el initState() se mantiene intacto*************************** */
-    if(ProfileDB.resultGet != null){//rellenar campos
-      avatar = ProfileDB.resultGet[0]['avatar'];
-      _txtName.text = ProfileDB.resultGet[0]['nombre'];
-      _txtApaterno.text = ProfileDB.resultGet[0]['apaterno'];
-      _txtAmaterno.text = ProfileDB.resultGet[0]['amaterno'];
-      _txtTel.text = '${ProfileDB.resultGet[0]['telefono']}';
-      _txtEmail.text = ProfileDB.resultGet[0]['email'];
+    if(resultGet != null){//rellenar campos
+      avatar = resultGet[0]['avatar'];
+      _txtName.text = resultGet[0]['nombre'];
+      _txtApaterno.text = resultGet[0]['apaterno'];
+      _txtAmaterno.text = resultGet[0]['amaterno'];
+      _txtTel.text = '${resultGet[0]['telefono']}';
+      _txtEmail.text = resultGet[0]['email'];
     }
     //****************************************************** */
     return Scaffold(
@@ -75,8 +147,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Container(
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: NetworkImage(avatar),//https://wallpaperaccess.com/full/2213424.jpg
-                      fit: BoxFit.fitHeight
+                      image: Image.file(File(avatar)).image,//https://wallpaperaccess.com/full/2213424.jpg
+                      fit: BoxFit.cover
                       )
                   )
                 ),
@@ -90,8 +162,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                           colors: [
-                            Color(0xFFffffff).withOpacity(0.1),
-                            Color(0xFFFFFFFF).withOpacity(0.05),
+                            Colors.black45.withOpacity(0.1),
+                            Colors.black45.withOpacity(0.05),
                           ],
                           stops: [
                             0.1,
@@ -121,14 +193,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       GestureDetector(
-                                        onTap: (){print("fsjdnfsjndfkn"); print(_profileDB.getProfile(1)); },
-                                        child: CircleAvatar(radius: 55, backgroundImage: NetworkImage(avatar),
+                                        onTap: (){ pickImage();},
+                                        child: CircleAvatar(radius: 55, backgroundImage: Image.file(File(avatar)).image //NetworkImage(avatar),
                                         ),
                                       ),
                                       Container(margin: EdgeInsets.only(right: 20), 
                                                 child: IconButton(
                                                   onPressed: (){
-                                                    if(ProfileDB.resultGet == null){ //si es nulo (es decir, que no exista el profile) antes de presionar el icono insertara uno nuevo con los datos de cada texfield
+                                                    if(resultGet == null){ //si es nulo (es decir, que no existe el registro) antes de presionar el icono insertara uno nuevo con los datos de cada texfield
                                                       ProfilesModel profile = ProfilesModel(
                                                         avatar: avatar,
                                                         nombre: _txtName.text,
@@ -165,7 +237,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                         (value) {
                                                           if(value > 0){
                                                             
-                                                            setState(() {_profileDB.getProfile(1); });
+                                                            setState(() {_profileDB.getProfile(1); }); //vuelvo a hacer la consulta para actualizar el valor de resultGet
                                                             ScaffoldMessenger.of(context).showSnackBar(
                                                               SnackBar(content: Text("Se han actualizado los datos."))
                                                             );
@@ -182,7 +254,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     ,
                                   ),
                                   //SizedBox(height: 80,),
-                                  Container(margin: EdgeInsets.only(top: 50, right: 100), child: Text(ProfileDB.resultGet[0]['nombre'], style: TextStyle(fontSize: 40, color: Colors.white, fontWeight: FontWeight.bold ))),
+                                  Container(margin: EdgeInsets.only(top: 50, right: 100), child: Text(resultGet[0]['nombre'], style: TextStyle(fontSize: 40, color: Colors.white, fontWeight: FontWeight.bold ))),
                                   SizedBox(height: 20,),
                                   //Text("Estudiante", style: TextStyle(fontSize: 15, color: Colors.white )),
                                   Container(/*margin: EdgeInsets.only(right: 30),*/ child: Divider(color: Colors.white, thickness: 2,)),

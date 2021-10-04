@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:practica2/src/database/profiles_db.dart';
 import 'package:practica2/src/screens/agregar_nota_screen.dart';
 import 'package:practica2/src/screens/intenciones_screen.dart';
 import 'package:practica2/src/screens/notas_screen.dart';
@@ -15,6 +16,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return MaterialApp(
       routes: {
         "/opc1": (BuildContext context) => Opcion1Screen(),
@@ -28,3 +30,5 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+late var resultGet; //declaro la variable por fuera de los metodos para que pueda ser usado por cualquier metodo
