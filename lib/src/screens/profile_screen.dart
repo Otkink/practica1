@@ -1,5 +1,5 @@
 import 'dart:io';
-
+//PROBLEMA> SELECCIONAR UNA IMAGEN REINICIA LOS VALORES QUE TENIAN LOS TEXTFIELD  SIN GUARDAR
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:glassmorphism/glassmorphism.dart';
@@ -22,6 +22,15 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
 
+  /**VARIABLES TEMPORALES */
+  late String tmpNombre = '';
+  late String tmpApaterno = '';
+  late String tmpAmaterno = '';
+  late String tmpTel = '';
+  late String tmpEmail = '';
+
+  var _hasChanged = false; //indica si el textfield ha cambiado sus valores de entrada
+  /**temporales */
 
   //String avatar = 'https://images.unsplash.com/photo-1618641986557-1ecd230959aa?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8aW5zdGFncmFtJTIwcHJvZmlsZXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&w=1000&q=80';//contendra la ubicacion de la imagen
   File? image;
@@ -127,12 +136,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     /*******************Esto es lo que recarga el setState, porque el initState() se mantiene intacto*************************** */
     if(resultGet != null){//rellenar campos
-      avatar = avatar!= resultGet[0]['avatar'] ? avatar : resultGet[0]['avatar'];
-      _txtName.text = resultGet[0]['nombre'];
-      _txtApaterno.text = resultGet[0]['apaterno'];
-      _txtAmaterno.text = resultGet[0]['amaterno'];
-      _txtTel.text = '${resultGet[0]['telefono']}';
-      _txtEmail.text = resultGet[0]['email'];
+      if(_hasChanged){ //solo si hubo algun cambio en los textfield, entonces, despues de recargar el state de la pantalla se actualizaran los campos con los valores temporales //esto es a causa de que si modifico un textfield sin cargarlos a la tabla y luego cambio la foto, los textfields son cargados con la informacion que hay en la tabla.
+        avatar = avatar!= resultGet[0]['avatar'] ? avatar : resultGet[0]['avatar'];
+        _txtName.text = tmpNombre=='' ? resultGet[0]['nombre'] : tmpNombre;
+        _txtApaterno.text = tmpApaterno=='' ? resultGet[0]['apaterno'] : tmpApaterno;
+        _txtAmaterno.text = tmpAmaterno=='' ? resultGet[0]['amaterno'] : tmpAmaterno;
+        _txtTel.text = tmpTel=='' ? '${resultGet[0]['telefono']}' : tmpTel;
+        _txtEmail.text = tmpEmail=='' ? resultGet[0]['email'] : tmpEmail;
+      }else{//si no hubo cambios en los textfield pero si en la imagen, entonces se actualiza todo
+        avatar = avatar!= resultGet[0]['avatar'] ? avatar : resultGet[0]['avatar'];
+        _txtName.text = resultGet[0]['nombre'];
+        _txtApaterno.text = resultGet[0]['apaterno'];
+        _txtAmaterno.text = resultGet[0]['amaterno'];
+        _txtTel.text = '${resultGet[0]['telefono']}';
+        _txtEmail.text = resultGet[0]['email'];
+      }
     }
     //****************************************************** */
     return Scaffold(
@@ -289,6 +307,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             //border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                                             contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 5)
                                           ),
+                                          onChanged: (text){ tmpNombre = text; _hasChanged = true; },
                                         ),
                                       )
                                     ],
@@ -317,6 +336,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             //border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                                             contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 5)
                                           ),
+                                          onChanged: (text){ tmpApaterno = text; _hasChanged = true;},
                                         ),
                                       )
                                     ],
@@ -345,6 +365,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             //border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                                             contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 5)
                                           ),
+                                          onChanged: (text){ tmpAmaterno = text; _hasChanged = true;}, //if(_hasChanged){_txtName.text = re}else{_txtName.text = resultGet[0]['nombre'];}
                                         ),
                                       )
                                     ],
@@ -373,6 +394,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             //border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                                             contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 5)
                                           ),
+                                          onChanged: (text){ tmpTel = text; _hasChanged = true;},
                                         ),
                                       )
                                     ],
@@ -401,6 +423,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             //border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                                             contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 5)
                                           ),
+                                          onChanged: (text){ tmpEmail = text; _hasChanged = true;},
                                         ),
                                       )
                                     ],
