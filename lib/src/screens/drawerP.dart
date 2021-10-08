@@ -40,16 +40,6 @@ class drawerP extends StatelessWidget {
     return Drawer(
           child: ListView(
             children: [
-              /*UserAccountsDrawerHeader(
-                accountName: Text("Daniel Torresさん"), 
-                accountEmail: Text("dtt@itcelaya.edu.mx"),
-                currentAccountPicture: CircleAvatar(
-                  child: Image.network("https://www.pngall.com/wp-content/uploads/5/Profile-Avatar-PNG.png"),
-                ),
-                decoration: BoxDecoration(
-                  color: ColorSettings.colorPrimary,
-                ),
-              ),*/
               UserAccountsDrawerHeader(
                 onDetailsPressed: (){Navigator.pop(context); Navigator.pushNamed(context, "/perfil");}, //v2.2 Se retira del stack el Drawer para que al regresar a la pantalla anterior se tenga que vovler a desplegar y asi, los datos del UserAccount se actualicen.
                 accountName: Text("${resultGet[0]['nombre']} ${resultGet[0]['apaterno']}さん"), 
@@ -89,6 +79,16 @@ class drawerP extends StatelessWidget {
                 onTap: (){
                   Navigator.pop(context);
                   Navigator.pushNamed(context, "/notas");
+                }
+              ),
+              ListTile(
+                title: Text("映画"),
+                subtitle: Text("Prueba API REST"),
+                leading: Icon(Icons.movie),
+                trailing: Icon(Icons.chevron_right),
+                onTap: (){
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, "/movie");
                 }
               ),
             ],

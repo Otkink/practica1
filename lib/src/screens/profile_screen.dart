@@ -1,5 +1,5 @@
 import 'dart:io';
-//PROBLEMA> SELECCIONAR UNA IMAGEN REINICIA LOS VALORES QUE TENIAN LOS TEXTFIELD  SIN GUARDAR
+//PROBLEMA> Al tener el teclado abierto y luego cambiar la imagen provoca que el area del teclado se quede en blanco y el Scaffold queda comprimida en el area restante/ //SOLO LA PRIMERA VEZ QUE SE cambia la foto
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:glassmorphism/glassmorphism.dart';
