@@ -91,6 +91,16 @@ class drawerP extends StatelessWidget {
                   Navigator.pushNamed(context, "/movie");
                 }
               ),
+              ListTile(
+                title: Text("Tareas"),
+                subtitle: Text("Lista de entregables"),
+                leading: Icon(Icons.task),
+                trailing: Icon(Icons.chevron_right),
+                onTap: (){
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, "/tareas");
+                }
+              ),
             ],
           ),
           );

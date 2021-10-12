@@ -85,41 +85,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     _profileDB = ProfileDB();
     _profileDB.getProfile(1);//como solo es 1 perfil por el momento hago la consulta directamente al registro que ya existe//este metodo guarda la cadena List en una var resultGet
-    /*//lo invoco desde aqui para que cada vez acceda a esta pantalla se actualice la variable
-    print('Esta es mi consulta jiji ${resultGet}');
-    print("Mi correo es ${resultGet[0]['nombre']}");*/
-    /*if(widget.profile != null){//rellenar campos
-      avatar = widget.profile!.avatar!;
-      _txtName.text = widget.profile!.nombre!;
-      _txtApaterno.text = widget.profile!.apaterno!;
-      _txtAmaterno.text = widget.profile!.amaterno!;
-      _txtTel.text = '${widget.profile!.telefono!}';//corregir//buscar como convertir int a String
-      _txtEmail.text = widget.profile!.email!;
-    }*/
-    /*ProfilesModel profile = ProfilesModel( //EN CASO DE BORRADO ACCIDENTAL, DESCOMENTAR ESTE METODO Y RECARGAR ESTA PANTALLA
-                                                        id: 1,//widget.profile!.id,
-                                                        avatar: "/data/user/0/com.example.practica2/cache/image_picker5101347763199675778.jpg",
-                                                        nombre: 'Daniel',
-                                                        apaterno: 'Torres',
-                                                        amaterno: 'Tolentino',
-                                                        telefono: 4888741321,//convierto el valor String del campo a Integer
-                                                        email: 'dsada@dasdasd.com'
-                                                      );
-                                                      _profileDB.update(profile.toMap()).then(
-                                                        (value) {
-                                                          if(value > 0){
-                                                            
-                                                            //setState(() {_profileDB.getProfile(1); }); //vuelvo a hacer la consulta para actualizar el valor de resultGet
-                                                            ScaffoldMessenger.of(context).showSnackBar(
-                                                              SnackBar(content: Text("Se ha actualizado la foto."))
-                                                            );
-                                                          }else{
-                                                            ScaffoldMessenger.of(context).showSnackBar(
-                                                              SnackBar(content: Text("No se pudo actualizar la foto."))
-                                                            );
-                                                          }
-                                                        });*/
-
+    
     if(resultGet != null){//rellena campos antes de abrir la pantalla
       avatar = avatar!= resultGet[0]['avatar'] ? avatar : resultGet[0]['avatar'];
       _txtName.text = resultGet[0]['nombre'];
