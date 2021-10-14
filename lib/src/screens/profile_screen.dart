@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:practica2/src/database/database_helper.dart';
 import 'package:practica2/src/database/profiles_db.dart';
 import 'package:practica2/src/main.dart';
 import 'package:practica2/src/models/profiles_model.dart';
@@ -68,8 +69,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return File(imagePath).copy(image.path);
   }
 
+  void refreshProfile(){
+    print("recargando...");
+    _databaseHelper.getProfile(1); 
+    
+    print('refreshProfile: ${resultGet[0]['nombre']}');
+    setState(() {}); //vuelvo a hacer la consulta para actualizar el valor de resultGet
+  }
 
-  late ProfileDB _profileDB;
+
+  //late ProfileDB _profileDB;
+  late DatabaseHelper _databaseHelper;
 
   TextEditingController _txtName = TextEditingController();
   TextEditingController _txtApaterno = TextEditingController();
@@ -82,9 +92,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
 
     super.initState();
-
-    _profileDB = ProfileDB();
-    _profileDB.getProfile(1);//como solo es 1 perfil por el momento hago la consulta directamente al registro que ya existe//este metodo guarda la cadena List en una var resultGet
+    _databaseHelper = DatabaseHelper();
+    _databaseHelper.getProfile(1);
+    //_profileDB = ProfileDB();
+    //_profileDB.getProfile(1);//como solo es 1 perfil por el momento hago la consulta directamente al registro que ya existe//este metodo guarda la cadena List en una var resultGet
     
     if(resultGet != null){//rellena campos antes de abrir la pantalla
       avatar = avatar!= resultGet[0]['avatar'] ? avatar : resultGet[0]['avatar'];
@@ -103,14 +114,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
     /*******************Esto es lo que recarga el setState, porque el initState() se mantiene intacto*************************** */
     if(resultGet != null){//rellenar campos
       if(_hasChanged){ //solo si hubo algun cambio en los textfield, entonces, despues de recargar el state de la pantalla se actualizaran los campos con los valores temporales //esto es a causa de que si modifico un textfield sin cargarlos a la tabla y luego cambio la foto, los textfields son cargados con la informacion que hay en la tabla.
+        _databaseHelper.getProfile(1);
         avatar = avatar!= resultGet[0]['avatar'] ? avatar : resultGet[0]['avatar'];
         _txtName.text = tmpNombre=='' ? resultGet[0]['nombre'] : tmpNombre;
+        print('hasCHangd $tmpNombre');
         _txtApaterno.text = tmpApaterno=='' ? resultGet[0]['apaterno'] : tmpApaterno;
         _txtAmaterno.text = tmpAmaterno=='' ? resultGet[0]['amaterno'] : tmpAmaterno;
         _txtTel.text = tmpTel=='' ? '${resultGet[0]['telefono']}' : tmpTel;
         _txtEmail.text = tmpEmail=='' ? resultGet[0]['email'] : tmpEmail;
       }else{//si no hubo cambios en los textfield pero si en la imagen, entonces se actualiza todo
+        _databaseHelper.getProfile(1);
         avatar = avatar!= resultGet[0]['avatar'] ? avatar : resultGet[0]['avatar'];
+        print('hasntCahnge $tmpNombre');
         _txtName.text = resultGet[0]['nombre'];
         _txtApaterno.text = resultGet[0]['apaterno'];
         _txtAmaterno.text = resultGet[0]['amaterno'];
@@ -201,7 +216,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                         email: _txtEmail.text
                                                       );
 
-                                                      _profileDB.insert(profile.toMap()).then(
+                                                      _databaseHelper.insertProfile(profile.toMap()).then(
                                                         (value){
                                                           if(value > 0){
                                                             ScaffoldMessenger.of(context).showSnackBar(
@@ -224,11 +239,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                         telefono: int.tryParse(_txtTel.text),//convierto el valor String del campo a Integer
                                                         email: _txtEmail.text
                                                       );
-                                                      _profileDB.update(profile.toMap()).then(
+                                                      _databaseHelper.updateProfile(profile.toMap()).then(
                                                         (value) {
                                                           if(value > 0){
-                                                            
-                                                            setState(() {_profileDB.getProfile(1); }); //vuelvo a hacer la consulta para actualizar el valor de resultGet
+                                                            refreshProfile();
                                                             ScaffoldMessenger.of(context).showSnackBar(
                                                               SnackBar(content: Text("Se han actualizado los datos."))
                                                             );
