@@ -2,7 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:practica2/src/database/database_helper.dart';
 import 'package:practica2/src/models/tareas_model.dart';
-import 'package:practica2/src/screens/tareas_screen.dart';
+import 'package:practica2/src/screens/tareas_screen/tareas_screen.dart';
 
 class TareaDetalle extends StatefulWidget {
   TareasModel? tarea;

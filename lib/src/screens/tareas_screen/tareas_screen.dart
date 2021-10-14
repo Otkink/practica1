@@ -4,7 +4,8 @@ import 'package:practica2/src/database/database_helper.dart';
 import 'package:practica2/src/database/tareas_db.dart';
 import 'package:practica2/src/models/tareas_model.dart';
 import 'package:practica2/src/screens/opcion1_screen.dart';
-import 'package:practica2/src/screens/tareas_detalle_screen.dart';
+import 'package:practica2/src/screens/tareas_screen/entregadas_screen.dart';
+import 'package:practica2/src/screens/tareas_screen/tareas_detalle_screen.dart';
 
 class TareasScreen extends StatefulWidget {
   const TareasScreen({Key? key}) : super(key: key);
@@ -136,7 +137,7 @@ class _TareasScreenState extends State<TareasScreen> {
                                     itemCount: tareas.length,
                                     itemBuilder: (context, index) {
                                       TareasModel tarea = tareas[index];
-                                      final item = items[index];
+                                      late DateTime fechaLimite = DateTime.parse(tarea.fechaEntrega!);
                                       return Dismissible(
                                         // Each Dismissible must contain a Key. Keys allow Flutter to
                                         // uniquely identify widgets.
@@ -260,7 +261,7 @@ class _TareasScreenState extends State<TareasScreen> {
                                       
                                         child: ListTile(
                                           title: DateTime.parse(tarea.fechaEntrega!).isBefore(DateTime.now()) == false ? Text(tarea.nomTarea.toString()) : Text('(VENCIDA) ${tarea.nomTarea.toString()}', style: TextStyle(color: Colors.grey)),
-                                          subtitle:  DateTime.parse(tarea.fechaEntrega!).isBefore(DateTime.now()) == false ? Text("Fecha de entrega: ${tarea.fechaEntrega.toString()}") : Text("Fecha de entrega: ${tarea.fechaEntrega.toString()}", style: TextStyle(color: Colors.red[400]),),
+                                          subtitle:  DateTime.parse(tarea.fechaEntrega!).isBefore(DateTime.now()) == false ? Text("Fecha de entrega: ${fechaLimite.day}/${fechaLimite.month}/${fechaLimite.year}") : Text("Fecha de entrega: ${fechaLimite.day}/${fechaLimite.month}/${fechaLimite.year}", style: TextStyle(color: Colors.red[400]),),
                                           onTap: (){
                                             print("U've picked me");
                                             Navigator.push(context, MaterialPageRoute(builder: (context) => TareaDetalle(tarea: tarea,)));
@@ -300,6 +301,7 @@ class _TareasScreenState extends State<TareasScreen> {
                                     itemCount: tareas.length,
                                     itemBuilder: (context, index) {
                                       TareasModel tarea = tareas[index];
+                                      late DateTime fechaLimite = DateTime.parse(tarea.fechaEntrega!);
                                       return Dismissible(
                                         // Each Dismissible must contain a Key. Keys allow Flutter to
                                         // uniquely identify widgets.
@@ -308,42 +310,93 @@ class _TareasScreenState extends State<TareasScreen> {
                                         // what to do after an item has been swiped away.
                                         confirmDismiss: (DismissDirection direction) async{
                                           if(direction == DismissDirection.endToStart){
-                                          await showDialog(
-                                                context: context,
-                                                builder: (BuildContext context) {
-                                                  return AlertDialog(
-                                                    title: Text("Confirmación"),
-                                                    content: Text("¿Desea eliminar esta tarea?"),
-                                                    actions: <Widget>[
-                                                      FlatButton(
-                                                          onPressed: () {
-                                                            Navigator.pop(context);
-                                                            print("eliinado Entregado");
-                                                            //ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Tarea eliminada.')));
-                                                            eliminado = true;
-                                                            
-                                                            //_databaseHelper.getTarea(1);
-                                                            // Remove the item from the data source.
-                                                            setState(() {
-                                                              items.removeAt(index);});
-                                                          },
-                                                        child: Text("Eliminar", style: TextStyle(color: Colors.red),)
-                                                      ),
-                                                      FlatButton(
-                                                        onPressed: () => Navigator.of(context).pop(false),
-                                                        child: Text("Cancelar"),
-                                                      ),
-                                                    ],
-                                                  );
-                                                },
-                                              ); 
+                                          await showDialog<String>(//muestro un alertdialog
+                                            context: context,
+                                            builder: (BuildContext context) => AlertDialog(
+                                              title: const Text('Deshacer entrega', style: TextStyle(color: Color(0xFFFD548F))),
+                                              content: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                mainAxisSize: MainAxisSize.min,//para que se ajuste solo al tamano de los children
+                                                children: [
+                                                  Text("¿Realmente desea realizar esta acción?")
+                                                ],
+                                              ),
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(30),
+                                                ),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  onPressed: () {Navigator.pop(context);},
+                                                  child: const Text('Cancelar', style: TextStyle(color: Colors.grey)),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () {
+                                                    TareasModel tareaUpdated = TareasModel(
+                                                      idTarea: tarea.idTarea,
+                                                      nomTarea: tarea.nomTarea,
+                                                      dscTarea: tarea.dscTarea,
+                                                      fechaEntrega: tarea.fechaEntrega,
+                                                      entregada: 0 //actualizo el estatus a no entregada
+                                                    );
+                                                    _databaseHelper.updateTarea(tareaUpdated.toMap()).then(
+                                                      (value) {
+                                                        if(value > 0){
+                                                          Navigator.pop(context);
+                                                          setState(() {});
+                                                        }else{
+                                                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("La solicitud no se completo")));
+                                                        }
+                                                      });
+                                                    //Navigator.pop(context, 'Aceptar');
+                                                  },
+                                                  child: const Text('Aceptar', style: TextStyle(color: Color(0xFFFF6B92))),
+                                                ),
+                                              ],),
+                                          ); 
                                           }else{
-                                            print("Tarea entregada");
-                                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Tarea entregada.'), duration: Duration(milliseconds: 500)));
-                                              // Remove the item from the data source.
-                                              setState(() {
-                                                items.removeAt(index);
-                                              });
+                                            await showDialog<String>(//muestro un alertdialog
+                                              context: context,
+                                              builder: (BuildContext context) => AlertDialog(
+                                                title: const Text('Deshacer entrega', style: TextStyle(color: Color(0xFFFD548F))),
+                                                content: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  mainAxisSize: MainAxisSize.min,//para que se ajuste solo al tamano de los children
+                                                  children: [
+                                                    Text("¿Realmente desea realizar esta acción?")
+                                                  ],
+                                                ),
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(30),
+                                                  ),
+                                                actions: <Widget>[
+                                                  TextButton(
+                                                    onPressed: () {Navigator.pop(context);},
+                                                    child: const Text('Cancelar', style: TextStyle(color: Colors.grey)),
+                                                  ),
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      TareasModel tareaUpdated = TareasModel(
+                                                        idTarea: tarea.idTarea,
+                                                        nomTarea: tarea.nomTarea,
+                                                        dscTarea: tarea.dscTarea,
+                                                        fechaEntrega: tarea.fechaEntrega,
+                                                        entregada: 0 //actualizo el estatus a no entregada
+                                                      );
+                                                      _databaseHelper.updateTarea(tareaUpdated.toMap()).then(
+                                                        (value) {
+                                                          if(value > 0){
+                                                            Navigator.pop(context);
+                                                            setState(() {});
+                                                          }else{
+                                                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("La solicitud no se completo")));
+                                                          }
+                                                        });
+                                                      //Navigator.pop(context, 'Aceptar');
+                                                    },
+                                                    child: const Text('Aceptar', style: TextStyle(color: Color(0xFFFF6B92))),
+                                                  ),
+                                                ],),
+                                            );
                                           }
                                           if(eliminado){ //lo muestro aqui porque el context del boton no es el Scaffold por alguna razon 
                                             eliminado = false; //resetea el valor para que no vuelva a entrar hasta que sea cambiado en el boton Eliminar del AlertDialog
@@ -356,7 +409,7 @@ class _TareasScreenState extends State<TareasScreen> {
                                           child: Row(
                                             mainAxisAlignment: MainAxisAlignment.start,
                                             children: [
-                                              Container(margin: EdgeInsets.only(left: 20) , child: Icon(Icons.task_alt_rounded, color: Colors.white,)),      
+                                              Container(margin: EdgeInsets.only(left: 20) , child: Icon(Icons.unpublished_outlined, color: Colors.white,)),      
                                             ],
                                           ), 
                                           decoration: BoxDecoration(
@@ -372,7 +425,7 @@ class _TareasScreenState extends State<TareasScreen> {
                                           child: Row(
                                             mainAxisAlignment: MainAxisAlignment.end,
                                             children: [               
-                                              Container(margin: EdgeInsets.only(right: 20) , child: Icon(Icons.delete_forever, color: Colors.white,)),
+                                              Container(margin: EdgeInsets.only(right: 20) , child: Icon(Icons.unpublished_outlined, color: Colors.white,)),
                                             ],
                                           ), 
                                           decoration: BoxDecoration(
@@ -387,10 +440,10 @@ class _TareasScreenState extends State<TareasScreen> {
                                       
                                         child: ListTile(
                                           title: Text(tarea.nomTarea.toString()),
-                                          subtitle: Text("Fecha de entrega: ${tarea.fechaEntrega.toString()}"),
+                                          subtitle: Text("Fecha de entrega: ${fechaLimite.day}/${fechaLimite.month}/${fechaLimite.year}"),
                                           onTap: (){
                                             print("U've picked me");
-                                            Navigator.push(context, MaterialPageRoute(builder: (context) => TareaDetalle(tarea: tarea,)));
+                                            Navigator.push(context, MaterialPageRoute(builder: (context) => TareasEntregadas(tarea: tarea,)));
                                             //Navigator.pushNamed(context, "/t_det");
                                           
                                           }

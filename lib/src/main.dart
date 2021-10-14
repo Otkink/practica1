@@ -7,8 +7,8 @@ import 'package:practica2/src/screens/notas_screen.dart';
 import 'package:practica2/src/screens/opcion1_screen.dart';
 import 'package:practica2/src/screens/profile_screen.dart';
 import 'package:practica2/src/screens/splash_screen.dart';
-import 'package:practica2/src/screens/tareas_detalle_screen.dart';
-import 'package:practica2/src/screens/tareas_screen.dart';
+import 'package:practica2/src/screens/tareas_screen/tareas_detalle_screen.dart';
+import 'package:practica2/src/screens/tareas_screen/tareas_screen.dart';
 
 void main() {
   runApp(MyApp());
