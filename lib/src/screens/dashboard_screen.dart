@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:practica2/src/database/database_helper.dart';
 import 'package:practica2/src/database/profiles_db.dart';
 import 'package:practica2/src/models/profiles_model.dart';
+import 'package:practica2/src/network/api_popular.dart';
 import 'package:practica2/src/screens/drawerP.dart';
 import 'package:practica2/src/utils/color_settings.dart';
 class DashboardScreen extends StatelessWidget {
@@ -38,6 +39,8 @@ class DashboardScreen extends StatelessWidget {
                                                             );
                                                           }
                                                         });*/
+    //ApiPopular? apiPopular = ApiPopular();
+    //apiPopular.getPopularDetails(379686); 
 
     return Scaffold(
       appBar: AppBar(

@@ -2,6 +2,7 @@
 
 class PopularMoviesModel {
   String? backdropPath;
+  List<dynamic> genreIds;
   int? id;
   String? originalLanguage;
   String? originalTitle;
@@ -15,6 +16,7 @@ class PopularMoviesModel {
 
   PopularMoviesModel({
     this.backdropPath,
+    required this.genreIds,
     this.id,
     this.originalLanguage,
     this.originalTitle,
@@ -30,6 +32,7 @@ class PopularMoviesModel {
   factory PopularMoviesModel.fromMap(Map<String,dynamic> map){
     return PopularMoviesModel(
       backdropPath      : map['backdrop_path'],
+      genreIds          : map['genre_ids'],
       id                : map['id'],
       originalLanguage  : map['original_language'], 
       originalTitle     : map['original_title'],

@@ -40,3 +40,4 @@ class MyApp extends StatelessWidget {
 }
 
 late var resultGet; //declaro la variable por fuera de los metodos para que pueda ser usado por cualquier metodo
+late var detallesPopular; //almacena el JSON de la pelicula cada vez que se llama a getPopularDetails(int id)
