@@ -3,6 +3,7 @@ import 'package:practica2/src/main.dart';
 import 'package:practica2/src/models/popular_details_model.dart';
 import 'package:practica2/src/models/popular_model.dart';
 import 'package:practica2/src/network/api_popular.dart';
+import 'package:practica2/src/screens/tareas_screen/detalles_popular.dart';
 
 class ListaPopularView extends StatelessWidget {
 
@@ -68,13 +69,19 @@ class ListaPopularView extends StatelessWidget {
     }
 
     return GestureDetector(
-      onTap: (){print("object");},
+      onTap: () async {
+        print('${popular.originalTitle}');
+        await _obtenerDetalles(); //大事！次のページに進む前に、リクエストが終了するのを待つ必要がある。そうでない場合は、データが保存しない。
+        await _obtenerActores(popular.id!);//これは上のことが同じなんだ
+        Navigator.pushNamed(context, '/d_pop', arguments: {'id': popular.id, 'titulo': popular.title, 'genresIdsLength': popular.genreIds.length}); //envio tambien el titulo porque en la pagina de detalles de cada pelicula el titulo cambia por otro, aunque similar.
+      },
       child: Container(
         margin: EdgeInsets.only(top: 18),
         child: Column(
           children: [
             Container(//quitar container y dejar el Row
               decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(20)),
                 color: Colors.white,
                 boxShadow: [BoxShadow(
                   color: Colors.black12,
@@ -97,7 +104,7 @@ class ListaPopularView extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         //Container(width: 170, child: SingleChildScrollView(scrollDirection: Axis.horizontal, child: Text("${popular.originalTitle}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)))),
-                        Container(width: 197, child: Text("${popular.originalTitle}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17))),
+                        Container(width: 197, child: Text("${popular.title}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17))),
                         SizedBox(height: 5,),
                         //Text("${popular.genreIds}"),
                         //Text("${apiPopular.getPopularDetails(popular.id!)}"),
@@ -166,9 +173,14 @@ class ListaPopularView extends StatelessWidget {
     );
   }
 
-  void _obtenerDetalles(){
+  Future<void> _obtenerDetalles() async {
     print("Aqui de nuevo");
     ApiPopular? apiPopular = ApiPopular();
-    apiPopular.getPopularDetails(popular.id!); 
+    await apiPopular.getPopularDetails(popular.id!); 
+  }
+
+  Future<void> _obtenerActores(int id) async {
+    ApiPopular? apiPopular = ApiPopular();
+    await apiPopular.getActores(id);
   }
 }

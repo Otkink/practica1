@@ -18,72 +18,74 @@ class drawerP extends StatelessWidget {
 
                                                         _databaseHelper.getProfile(1);
     
-    return Drawer(
-          child: ListView(
-            children: [
-              UserAccountsDrawerHeader(
-                onDetailsPressed: (){Navigator.pop(context); Navigator.pushNamed(context, "/perfil");}, //v2.2 Se retira del stack el Drawer para que al regresar a la pantalla anterior se tenga que vovler a desplegar y asi, los datos del UserAccount se actualicen.
-                 accountName: Text("${resultGet[0]['nombre']} ${resultGet[0]['apaterno']}さん"), 
-                accountEmail: Text("${resultGet[0]['email']}"),
-                currentAccountPicture: CircleAvatar(
-                  backgroundImage: Image.file(File(resultGet[0]['avatar'])).image,
+    return SafeArea(//lo pongo para que se oscuresca el statusbar y se vea el texto blanco
+      child: Drawer(
+            child: ListView(
+              children: [
+                UserAccountsDrawerHeader(
+                  onDetailsPressed: (){Navigator.pop(context); Navigator.pushNamed(context, "/perfil");}, //v2.2 Se retira del stack el Drawer para que al regresar a la pantalla anterior se tenga que vovler a desplegar y asi, los datos del UserAccount se actualicen.
+                   accountName: Text("${resultGet[0]['nombre']} ${resultGet[0]['apaterno']}さん"), 
+                  accountEmail: Text("${resultGet[0]['email']}"),
+                  currentAccountPicture: CircleAvatar(
+                    backgroundImage: Image.file(File(resultGet[0]['avatar'])).image,
+                  ),
+                  decoration: BoxDecoration(
+                    color: ColorSettings.colorPrimary,
+                  ),
                 ),
-                decoration: BoxDecoration(
-                  color: ColorSettings.colorPrimary,
+                ListTile(
+                  title: Text("Propinas"),
+                  subtitle: Text("Calcular total"),
+                  leading: Icon(Icons.monetization_on_outlined),
+                  trailing: Icon(Icons.chevron_right),
+                  onTap: (){
+                    Navigator.pop(context);
+                    Navigator.pushNamed(context, "/opc1");
+                  }
                 ),
-              ),
-              ListTile(
-                title: Text("Propinas"),
-                subtitle: Text("Calcular total"),
-                leading: Icon(Icons.monetization_on_outlined),
-                trailing: Icon(Icons.chevron_right),
-                onTap: (){
-                  Navigator.pop(context);
-                  Navigator.pushNamed(context, "/opc1");
-                }
-              ),
-              ListTile(
-                title: Text("Intenciones"),
-                subtitle: Text("Intenciones implicitas"),
-                leading: Icon(Icons.phone_android),
-                trailing: Icon(Icons.chevron_right),
-                onTap: (){
-                  Navigator.pop(context);
-                  Navigator.pushNamed(context, "/intenciones");
-                }
-              ),
-              ListTile(
-                title: Text("Notas"),
-                subtitle: Text("CRUD Notas"),
-                leading: Icon(Icons.note),
-                trailing: Icon(Icons.chevron_right),
-                onTap: (){
-                  Navigator.pop(context);
-                  Navigator.pushNamed(context, "/notas");
-                }
-              ),
-              ListTile(
-                title: Text("映画"),
-                subtitle: Text("Prueba API REST"),
-                leading: Icon(Icons.movie),
-                trailing: Icon(Icons.chevron_right),
-                onTap: (){
-                  Navigator.pop(context);
-                  Navigator.pushNamed(context, "/movie");
-                }
-              ),
-              ListTile(
-                title: Text("Tareas"),
-                subtitle: Text("Lista de entregables"),
-                leading: Icon(Icons.task),
-                trailing: Icon(Icons.chevron_right),
-                onTap: (){
-                  Navigator.pop(context);
-                  Navigator.pushNamed(context, "/tareas");
-                }
-              ),
-            ],
-          ),
-          );
+                ListTile(
+                  title: Text("Intenciones"),
+                  subtitle: Text("Intenciones implicitas"),
+                  leading: Icon(Icons.phone_android),
+                  trailing: Icon(Icons.chevron_right),
+                  onTap: (){
+                    Navigator.pop(context);
+                    Navigator.pushNamed(context, "/intenciones");
+                  }
+                ),
+                ListTile(
+                  title: Text("Notas"),
+                  subtitle: Text("CRUD Notas"),
+                  leading: Icon(Icons.note),
+                  trailing: Icon(Icons.chevron_right),
+                  onTap: (){
+                    Navigator.pop(context);
+                    Navigator.pushNamed(context, "/notas");
+                  }
+                ),
+                ListTile(
+                  title: Text("映画"),
+                  subtitle: Text("Prueba API REST"),
+                  leading: Icon(Icons.movie),
+                  trailing: Icon(Icons.chevron_right),
+                  onTap: (){
+                    Navigator.pop(context);
+                    Navigator.pushNamed(context, "/movie");
+                  }
+                ),
+                ListTile(
+                  title: Text("Tareas"),
+                  subtitle: Text("Lista de entregables"),
+                  leading: Icon(Icons.task),
+                  trailing: Icon(Icons.chevron_right),
+                  onTap: (){
+                    Navigator.pop(context);
+                    Navigator.pushNamed(context, "/tareas");
+                  }
+                ),
+              ],
+            ),
+            ),
+    );
   }
 }

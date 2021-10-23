@@ -39,8 +39,9 @@ class DashboardScreen extends StatelessWidget {
                                                             );
                                                           }
                                                         });*/
-    //ApiPopular? apiPopular = ApiPopular();
-    //apiPopular.getPopularDetails(379686); 
+    ApiPopular? apiPopular = ApiPopular();
+    apiPopular.getPopularDetails(379686); 
+    apiPopular.getActores(379686);
 
     return Scaffold(
       appBar: AppBar(
