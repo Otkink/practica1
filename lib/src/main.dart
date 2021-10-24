@@ -12,6 +12,7 @@ import 'package:practica2/src/screens/splash_screen.dart';
 import 'package:practica2/src/screens/tareas_screen/detalles_popular.dart';
 import 'package:practica2/src/screens/tareas_screen/tareas_detalle_screen.dart';
 import 'package:practica2/src/screens/tareas_screen/tareas_screen.dart';
+import 'package:practica2/src/screens/video_player.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -43,7 +44,8 @@ class MyApp extends StatelessWidget {
         "/tareas": (BuildContext context) => TareasScreen(),
         "/t_det": (BuildContext context) => TareaDetalle(),
         "/detail": (BuildContext context) => DetailScreen(),
-        "/d_pop": (BuildContext context) => DetallesPopularScreen()
+        "/d_pop": (BuildContext context) => DetallesPopularScreen(),
+        "/video": (BuildContext context) => VideoPlayer()
       },
       debugShowCheckedModeBanner: false,
       home: SplashScreen(),
@@ -54,3 +56,4 @@ class MyApp extends StatelessWidget {
 late var resultGet; //declaro la variable por fuera de los metodos para que pueda ser usado por cualquier metodo
 late var detallesPopular; //almacena el JSON de la pelicula cada vez que se llama a getPopularDetails(int id)
 late var actoresPopular; //almacena el JSON de la pelicula cada vez que se llama a getPopularDetails(int id)
+late var videoPelicula;

@@ -73,6 +73,7 @@ class ListaPopularView extends StatelessWidget {
         print('${popular.originalTitle}');
         await _obtenerDetalles(); //大事！次のページに進む前に、リクエストが終了するのを待つ必要がある。そうでない場合は、データが保存しない。
         await _obtenerActores(popular.id!);//これは上のことが同じなんだ
+        await _obtenerVideo(popular.id!);
         Navigator.pushNamed(context, '/d_pop', arguments: {'id': popular.id, 'titulo': popular.title, 'genresIdsLength': popular.genreIds.length}); //envio tambien el titulo porque en la pagina de detalles de cada pelicula el titulo cambia por otro, aunque similar.
       },
       child: Container(
@@ -182,5 +183,10 @@ class ListaPopularView extends StatelessWidget {
   Future<void> _obtenerActores(int id) async {
     ApiPopular? apiPopular = ApiPopular();
     await apiPopular.getActores(id);
+  }
+
+  Future<void> _obtenerVideo(int id) async {
+    ApiPopular? apiPopular = ApiPopular();
+    await apiPopular.getVideo(id);
   }
 }

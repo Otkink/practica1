@@ -13,8 +13,9 @@ class DetallesPopularScreen extends StatelessWidget {
     String? mes = '';
     String? generos = '';
     final detalle = ModalRoute.of(context)!.settings.arguments as Map<String,dynamic>; //cone sta instruccion es posible recuperar los parametros enviados en el Navigator.pushNamed(..., arguments:"...")
-    print('${detalle['id']}');
-    print(detallesPopular['id']);
+    print('detalle ${detalle['id']}');
+    print('detalle populr ${detallesPopular['id']}');
+    print("hola");
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light); // 1
 
     switch (fechaSalida!.month) {
@@ -218,7 +219,9 @@ class DetallesPopularScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 30,),
                     FlatButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(context, "/video", arguments: {'id': detalle['id']});
+                      },
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20.0)),
                       padding: const EdgeInsets.all(0.0),
@@ -295,26 +298,3 @@ class DetallesPopularScreen extends StatelessWidget {
   );
   }
 }
-
-
-/*
-Widget _listaCasting(){
-  if (1 == 1) {
-    for (var i = 0; i < 5; i++) {
-      
-    }
-  } else {
-    return Text("Sin actores");
-  }
-}
-
-Widget _actor(){
-  return Column(
-    children: [
-      CircleAvatar(
-
-      ),
-      Text("")
-    ],
-  );
-}*/
