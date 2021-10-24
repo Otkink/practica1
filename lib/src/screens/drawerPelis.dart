@@ -62,11 +62,11 @@ class drawerPelis extends StatelessWidget {
                     SizedBox(height: 50,),
                     ListTile(
                       title: Text("Favoritos", style: TextStyle(color: Colors.white)),
-                      leading: Icon(Icons.favorite_outline, color: Colors.white,),
+                      leading: Icon(Icons.star_border_rounded, color: Colors.white,),
                       //trailing: Icon(Icons.chevron_right),
                       onTap: (){
                         Navigator.pop(context);
-                        Navigator.pushNamed(context, "/opc1");
+                        Navigator.pushNamed(context, "/v_fav");
                       }
                     ),
                   ],

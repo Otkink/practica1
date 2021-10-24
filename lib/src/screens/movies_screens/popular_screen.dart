@@ -71,6 +71,7 @@ class _PopularScreenState extends State<PopularScreen> {
   Widget _listPopularMovies(List<PopularMoviesModel>? movies){
 
     return ListView.builder(
+      shrinkWrap: false,
       itemBuilder: (context, index){
        
         PopularMoviesModel popular = movies![index]; 

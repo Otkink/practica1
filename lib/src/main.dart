@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:practica2/src/database/profiles_db.dart';
 import 'package:practica2/src/screens/agregar_nota_screen.dart';
+import 'package:practica2/src/screens/favoritos_screen.dart';
 import 'package:practica2/src/screens/intenciones_screen.dart';
 import 'package:practica2/src/screens/movies_screens/detail_screen.dart';
 import 'package:practica2/src/screens/movies_screens/popular_screen.dart';
@@ -45,7 +46,8 @@ class MyApp extends StatelessWidget {
         "/t_det": (BuildContext context) => TareaDetalle(),
         "/detail": (BuildContext context) => DetailScreen(),
         "/d_pop": (BuildContext context) => DetallesPopularScreen(),
-        "/video": (BuildContext context) => VideoPlayer()
+        "/video": (BuildContext context) => VideoPlayer(),
+        "/v_fav": (BuildContext context) => FavoritosScreen()
       },
       debugShowCheckedModeBanner: false,
       home: SplashScreen(),
